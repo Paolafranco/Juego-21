@@ -1,101 +1,121 @@
-class Cartas{
-    constructor(barajas,value=[],texto){
-      this.barajas=barajas;
-      this.value=value;
-      this.text=text;
-      
+class Carta{
+    numero=0
+    figura='';
+    valor1=0;
+    valor2=0;
+    dobleValor=false;
+    constructor(numero,figura,valor1,valor2,dobleValor){
+        this.numero=numero;
+        this.figura=figura;
+        this.valor1=valor1;
+        this.valor2=valor2;
+    //esta variable sirve para saber si la carta tiene dos valores como por ejemplo el a y el 1 que vale  11 y 1
+        if (valor1==valor2){
+
+            this.dobleValor=false;
+        }
+        else{
+            this.dobleValor=true;
+        }
     }
-  }
-  
-  class Baraja{
-    constructor (model){
-      this.model = model;
-    }
-  }
-  
-  class Fabrica {
-    barajas = [new Baraja("trebol negro"),new Baraja("corazon Rojo"),new Baraja("corazon Negro"),new Baraja("brillo rojo")];
-       letras=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-        Valores = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-        cartas=[];
-        cartasEnOrden=[];
-        elementos;
-    crearBarajas() {
-      // insertar los valores al array
-     barajas.forEach(function (elementBaraja) {
-        letras.forEach(function (elementFigu, index) {
-            if (index == 0) {
-                this.cartas.push(new Cartas(elementBaraja, [1, 11], elementFigu))
-            } else if (index > 9) {
-                this.cartas.push(new Cartas(elementBaraja, Valores[9], elementFigu))
-            } else {
-                this.cartas.push(new Cartas(elementBaraja, Valores[index], elementFigu))
+}
+
+class Mazo extends Array {        
+    
+}
+
+class Jugador{
+    mano = new Array();
+    puntaje = 0;
+}
+
+function crearCartas(mazoCartas) {
+    var nombresCartas=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+    var pintas=['CORAZON ROJO', 'CORAZON NEGRO', 'TREBOL', 'DIAMANTE'];
+    // hacemos el salto entre las difernetes pintas de las cartas
+    pintas.forEach(function(nombrePinta) {
+        //hacemos un barrido entre todos los numeros por cada pinta
+        nombresCartas.forEach(function(numeroCarta,indice){
+           var valorCarta1=0
+           var valorCarta2=0
+            // el indice 0 es el a
+            if(indice==0)
+            {
+                //aqui nos dice que la carta a valga 1 y 11
+                valorCarta1=1
+                valorCarta2=11
             }
-        },this)
-    },this)
-    
-    
-  }
-  mezclarCarta(){
-   
-  }
-  
-  }
-  
-  class Jugar extends Fabrica {
-    nuevaBaraja=[]
-    contador=0;
-    mezclarCarta() {
-      while (this.cartasEnOrden.length < 52) {
-        let car = Math.floor(Math.random() * (52));
-        this.elementos = this.cartasEnOrden.find(element => element == car)
-        let condicion = (this.elementos == undefined) ? this.cartasEnOrden.push(car) : car;
-    }
-    
-    for (let j = 0; j < this.cartas.length - 1; j++) {
-        this.elementos = this.cartas[this.cartasEnOrden[j]]
-        this.cartas[this.cartasEnOrden[j]] = this.cartas[j]
-        this.cartas[j] = this.elementos;
-    }
-    return this.cartas   
-    }
-    validarCarta() {
-      //sumatoria
-      let filtro = this.nuevaBaraja.reduce(
-        function(ahora,antes) {
-            if (typeof(antes) == 'object') {
-                if (antes > 10) {
-                    return antes[0] + ahora;
-                } else {
-         return antes[1] + ahora;
+            else{
+                //el indice es 9 y luego hacemos que a partir de 9 nos de 10
+                if (indice>9) 
+                {
+                    valorCarta1=10
+                    valorCarta2=10
                 }
-            } else {
-                return antes + ahora;
+             else
+                {
+                // a los numero entre dos y 10 van a tener mas 1 EJEMPLO: carta 2 el indice va ser 1 por eso
+                // incrementamos el 1 el indice para tener el valor de la carta.
+                    valorCarta1=indice+1
+                    valorCarta2=indice+1
+                }
             }
+            mazoCartas.push(new Carta(numeroCarta,nombrePinta,valorCarta1,valorCarta2) )
+        });
+
+        
+    });
+    return;
   
-        })
-  
-    if (filtro == 21) {
-        console.log('GANADOR')
-    } else if (filtro < 21) {
-        console.log('OTRA CARTA')
-    } else if (filtro > 21) {
-        console.log('SIGUE PARTICIPANDO')
+};
+function verCartasMazo(mazoCartas) 
+{
+    mazoCartas.forEach(function (carta) {
+        console.log(carta.numero + ' '+ carta.figura)
+    });
+    
+}
+
+function pedirCarta(mazoCartas, player)
+{
+// Math.forr sirve para rendondear la sifra menor del numero decimal y obtener un entero 
+//Match.random se utiliza para tener un numero aleatorio entre 0 y 1, y multiplicar por el tamaño 
+//actual del array para obtener  un numero alealtorio.
+    var cartasRetiradas = mazoCartas.splice(Math.floor(Math.random()*mazoCartas.length),1)
+    var  textoCarta=''
+    var dobleCarta=false
+    cartasRetiradas.forEach(function (carta) {
+        player.mano.push(carta);
+        
+        
+        textoCarta = carta.numero + ' '+ carta.figura
+    });
+    
+    var suma = 0
+    player.mano.forEach(function (carta){
+        //suma todos los valores de todas las cartas de la mano 
+        if (carta.dobleValor)
+            dobleCarta = true
+        suma = suma + carta.valor2
+
+    });
+
+    
+    // los numers de la suma que sea mayor de 21 y la doble carta 
+    if (suma > 21 & dobleCarta) {
+        suma = 0
+        //el juegador y la mano luego ejecutamos la función 
+        //indicada una vez por cada elemento del array.
+        //en este caso seria carta
+        player.mano.forEach(function (carta){
+            //suma todos los valores de todas las cartas de la mano
+            //console.log(carta.numero + ' '+ carta.figura) 
+            suma = suma + carta.valor1
+
+        });
+        
     }
-    console.log('tu suma es'+filtro);
-      
-    }
-  }
-  
-  class Jugador extends Fabrica{
-    nuevaBaraja=[];
-    contador=0;
-    pedirCarta(){
-  
-      this.nuevaBaraja.push(this.cartas[this.contador].valor);
-          this.contador++;
-          this.validarCarta()
-          return this.nuevaBaraja
-  
-    }
-  }
+    //console.log(suma)
+    player.puntaje = suma
+    return textoCarta;
+}
