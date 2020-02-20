@@ -1,17 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juego 21</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
 <body>
-  Juego-21 
+    <script src='juego.js'></script>
+   <center><img src="imagenes/titulo.gif"></center> 
+   <br>
+   <center><img src="imagenes/cartas.jpg"></center>
+ <script>
+        var mazoCartas = new Mazo();
+        var player = new Jugador();
+        crearCartas(mazoCartas);
+        
+        function Jugar() {
+            var textoCarta = pedirCarta(mazoCartas, player);
+            var li=document.createElement('li');
+                        
+            li.innerHTML="<span>"+textoCarta+"</span>";
+            document.getElementById("listaDesordenada").appendChild(li);
+            if (player.puntaje > 21) {
+                //alert('HAS PERDIDO INMUNDO ANIMAL');
+                document.getElementById("botonPc").style='display:none'
+                
+            }
+    
+            if (player.puntaje == 21) {
+                //alert('FELICITACIONES HAS GANADO');
+                document.getElementById("botonPc").style='display:none'
+                
+            }
+            
+        }
+    
+        function reiniciar() 
+        {
+            document.getElementById("botonPc").style='';
+            
+            var ul = document.getElementById("listaDesordenada");
+
+            while (ul.firstChild){
+                ul.removeChild(ul.firstChild);
+            }
+            mazoCartas = new Mazo();
+            player = new Jugador();
+            crearCartas(mazoCartas);
+    
+        }
+        
+        //pedirCarta(mazoCartas, player);
+        //pedirCarta(mazoCartas, player);
+    
+    </script>
+    <br><br>   
+<center><button id="botonPc" onclick="Jugar()">PEDIR CARTA</button>
+<button id="botonR" onclick="reiniciar()"> REINICIAR</button></center>
+<br><br>  
+<BR>
+<ul id="listaDesordenada">
+</ul>
+
+
 </body>
-<script src="juego.js"></script>
-<script>
-  var pao = new Cartas();
-  var mateo = new Jugar(c.generarCartas());
-  
-</script>
 </html>
